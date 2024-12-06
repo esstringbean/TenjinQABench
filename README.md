@@ -1,12 +1,10 @@
-# ScholarQABench
+# TenjinQABench
 
-This repository contains **ScholarQABench** evaluation script and data, which provides a holistic evaluation platform to test LLMs' abilities of assisting researchers to conduct scientific literature synthesis. This work is from the [OpenScholar](https://github.com/AkariAsai/OpenScholar) project. See details in [our manuscript](https://openscholar.allen.ai/paper). 
-
-![scholar bench overview](scholarqabench.png)
+This repository contains **TenjinQABench** evaluation script and data, which provides a holistic evaluation platform to test LLMs' abilities of assisting researchers to conduct scientific literature synthesis. This work is from the [OpenTenjin]((https://github.com/esstringbean/Tenjin)) project. 
 
 **Change logs** 
 
-- November 19 2024: Initial release. 
+- December 6 2024: Initial release. 
 
 **Table of Contents**
 
@@ -29,32 +27,32 @@ python -m nltk.downloader punkt_tab
 ### Repository Organizations
 
 - [data](data/): provides relevant data files. 
-    - [scholar_cs](scholar_cs): includes **ScholarQA-CS** (Computer Science) data files
+    - [Tenjin_cs](Tenjin_cs): includes **TenjinQA-CS** (Computer Science) data files
         - ``output_snippets.jsonl`` : Contains the questions with system responses for eval (and some other metadata used to generate the test cases but not required for subsequent runs). Should not require further modification.
         - `test_configs_snippets.json` : A collection of test cases in json format with associated rubrics for each question. Each question has its own test case and rubrics. Should not require further modification.
         - `qa_metadata_all.jsonl` : Metadata file that was used to bootstrap this utility. Should not require further modification.
         - `src_answers`: Directory containing sample system responses from 4 systems.
 
-    - [scholar_multi](scholar_multi): includes **ScholarQA-Multi** (Multi-domain; CS, Bio and Physics) data files
-    - [scholar_bio](scholar_bio): includes **ScholarQA-Bio** (Biomedicine) data files
-    - [scholar_neuro](scholar_neuro): includes **ScholarQA-Neuro** (Neuroscience) data files
+    - [Tenjin_multi](Tenjin_multi): includes **TenjinQA-Multi** (Multi-domain; CS, Bio and Physics) data files
+    - [Tenjin_bio](Tenjin_bio): includes **TenjinQA-Bio** (Biomedicine) data files
+    - [Tenjin_neuro](Tenjin_neuro): includes **TenjinQA-Neuro** (Neuroscience) data files
 - [scripts](scripts/): provides evaluation scripts for each evaluation aspects
-    - [rubric_eval.py](scripts/rubric_eval.py): a script to run rubric based evaluations for **ScholarQA-CS**. 
+    - [rubric_eval.py](scripts/rubric_eval.py): a script to run rubric based evaluations for **TenjinQA-CS**. 
     - [citation_correctness_eval.py](scripts/citation_correctness_eval.py): a script to run citations as well as string-matching-based correctness evaluations for single-paper tasks. 
     - [prometheus_eval.py](scripts/prometheus_eval.py): a script to evaluate *organization*, *relevance* and *coverage*, based on five-scale rubrics in [rubrics](rubrics/prometheous_rubrics_v8.json)
 - [rubrics](rubrics): rubrics for `prometheus_eval`. 
 
-The availability of annotations, as well as overview of the annotations are summarized below. Note that ScholarQA-Bench does not provide training data. 
+The availability of annotations, as well as overview of the annotations are summarized below. Note that TenjinQA-Bench does not provide training data. 
 
 | Dataset    | Input | Output | Label Available | Evaluation Metrics |
 | :-------- | :-------: |:-------: | :-------: | :-------: |
-| `ScholarQA-SciFact`  |  claim   | `true` or `false` |  ✅ | `accuracy`, `citations_short` |
-| `ScholarQA-PubmedQA`  |  question   | `yes` or `no` | ✅  | `accuracy`, `citations_short` |
-| `ScholarQA-QASA`  |  question   | long-form |  ✅ | `rouge-l`, `citations` |
-| `ScholarQA-CS`  |  question   | long-form |  ✅ (rubrics) | `rubrics`, `citations` |
-| `ScholarQA-Multi`  |  question   | long-form |  ✅ | `prometheus`, `citations` |
-| `ScholarQA-Bio`  |  question   | long-form |  | `citations` |
-| `ScholarQA-Neuro`  |  question   | long-form | |  `citations` |
+| `TenjinQA-SciFact`  |  claim   | `true` or `false` |  ✅ | `accuracy`, `citations_short` |
+| `TenjinQA-PubmedQA`  |  question   | `yes` or `no` | ✅  | `accuracy`, `citations_short` |
+| `TenjinQA-QASA`  |  question   | long-form |  ✅ | `rouge-l`, `citations` |
+| `TenjinQA-CS`  |  question   | long-form |  ✅ (rubrics) | `rubrics`, `citations` |
+| `TenjinQA-Multi`  |  question   | long-form |  ✅ | `prometheus`, `citations` |
+| `TenjinQA-Bio`  |  question   | long-form |  | `citations` |
+| `TenjinQA-Neuro`  |  question   | long-form | |  `citations` |
 
 
 
@@ -77,7 +75,7 @@ python citation_correctness_eval.py --f PATH_TO_YOUR_PREDICTION_FILE --citations
 ```
 
 
-#### Long-form generation (QASA, ScholarQA-*)
+#### Long-form generation (QASA, TenjinQA-*)
 
 ```
 python citation_correctness_eval.py --f PATH_TO_YOUR_PREDICTION_FILE --citations_long
@@ -100,7 +98,7 @@ python citation_correctness_eval.py --f PATH_TO_YOUR_PREDICTION_FILE
 ```
 
 
-### Rubric-based Correctness (ScholarQA-CS)
+### Rubric-based Correctness (TenjinQA-CS)
 
 #### Convert the output file
 To run eval for your system, first setup the prediction file with the system answers to be evaluated as per following requirement:
@@ -115,8 +113,8 @@ We provide an answer conversion script, [`convert_answer_nora.py`](scripts/conve
 ```
 python scripts/convert_answer_nora.py \
     --pred_file YOUR_PRED_FILE_NAME \
-    --data_file data/scholar_cs/test_configs_snippets.json \
-    --output_file scholar_cs/src_answers/CONVERTED_OUTPUT_FILE_NAME
+    --data_file data/Tenjin_cs/test_configs_snippets.json \
+    --output_file Tenjin_cs/src_answers/CONVERTED_OUTPUT_FILE_NAME
 ```
 
 ##### Run evaluation 
@@ -125,16 +123,16 @@ Once the prediction json file is ready, save it a new directory run the eval scr
 ```python
 export OPENAI_API_KEY=<openai key>
 python scripts/rubric_eval.py \
-    --qa-dir data/scholar_cs/src_answers \
-    --test-config data/scholar_cs/test_configs_snippets.json \
+    --qa-dir data/Tenjin_cs/src_answers \
+    --test-config data/Tenjin_cs/test_configs_snippets.json \
     --rubrics --snippets \
     --src-names <optional comma separated src names prefixes of prediction files with .jsonl, if not given all the files will be picked>
 ```
 **Note:** To evaluate only using rubrics, remove `--snippets` parameter and vice-versa to use only snippets. 
 
-**Acknowledgements:** The original code of the ScholarQA-CS are available at [allenai/multidoc_qa_eval](https://github.com/allenai/multidoc_qa_eval).
+**Acknowledgements:** The original code of the TenjinQA-CS are available at [allenai/multidoc_qa_eval](https://github.com/allenai/multidoc_qa_eval).
 
-### Prometheus for Coverage, Relevance and Organization (ScholarQA-CS)
+### Prometheus for Coverage, Relevance and Organization (TenjinQA-CS)
 
 #### Coverage and Organization
 
@@ -147,7 +145,7 @@ python scripts/prometheus_eval.py \
     --model prometheus-eval/prometheus-7b-v2.0 \
     --load_vllm \
     --top_n 10 \
-    -f data/scholar_multi/human_answers.json \
+    -f data/Tenjin_multi/human_answers.json \
     --aspects organization coverage
 ```
 
@@ -163,7 +161,7 @@ python scripts/prometheus_eval.py \
     --model prometheus-eval/prometheus-bgb-8x7b-v2.0 \
     --load_vllm \
     --top_n 10 \
-    -f data/scholar_multi/human_answers.json \
+    -f data/Tenjin_multi/human_answers.json \
     --aspects relevance
 ```
 
@@ -173,12 +171,3 @@ By downloading this data you acknowledge that you have read and agreed to all th
 For constituent datasets, also go through the individual licensing requirements, as applicable. 
 
 
-## Citations
-```
-@article{openscholar,
-  title={{OpenScholar}: Synthesizing Scientific Literature with Retrieval-Augmented Language Models},
-  author={Asai, Akari and He*, Jacqueline and Shao*, Rulin and Shi, Weijia and Singh, Amanpreet and Chang, Joseph Chee  and Lo,  Kyle and Soldaini, Luca and Feldman, Tian, Sergey and Mike, D’arcy and Wadden, David and Latzke, Matt and Minyang and Ji, Pan and Liu, Shengyan and Tong, Hao and Wu, Bohao and Xiong, Yanyu and Zettlemoyer, Luke and Weld, Dan and Neubig, Graham and Downey, Doug and Yih, Wen-tau and Koh, Pang Wei and Hajishirzi, Hannaneh},
-  journal={Arxiv},
-  year={2024},
-}
-```
